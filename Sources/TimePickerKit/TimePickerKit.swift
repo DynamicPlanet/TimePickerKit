@@ -65,6 +65,22 @@ public struct TimePickerView: View {
             .padding(.horizontal, 20)
             
             Spacer()
+
+            // 确认按钮
+            if showConfirmButton {
+                Button(confirmButtonText) {
+                    let selection = getCurrentSelection()
+                    onConfirm?(selection)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(Color.black)
+                .foregroundColor(.white)
+                .font(.headline)
+                .cornerRadius(16)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+            }
         }
         .onAppear {
             updateSelectedValues()
