@@ -16,17 +16,26 @@ public struct TimePickerView: View {
     private let showSegmentedControl: Bool
     private let allowedTimeTypes: [TimeType]
     private let onSelectionChanged: ((TimeSelection) -> Void)?
+    private let onConfirm: ((TimeSelection) -> Void)?
+    private let showConfirmButton: Bool
+    private let confirmButtonText: String
     
     public init(
         timeType: TimeType = .year,
         showSegmentedControl: Bool = true,
         allowedTimeTypes: [TimeType] = TimeType.allCases,
-        onSelectionChanged: ((TimeSelection) -> Void)? = nil
+        showConfirmButton: Bool = true,
+        confirmButtonText: String = "确定",
+        onSelectionChanged: ((TimeSelection) -> Void)? = nil,
+        onConfirm: ((TimeSelection) -> Void)? = nil
     ) {
         self._timeType = State(initialValue: timeType)
         self.showSegmentedControl = showSegmentedControl
         self.allowedTimeTypes = allowedTimeTypes
+        self.showConfirmButton = showConfirmButton
+        self.confirmButtonText = confirmButtonText
         self.onSelectionChanged = onSelectionChanged
+        self.onConfirm = onConfirm
     }
     
     public var body: some View {
@@ -65,7 +74,7 @@ public struct TimePickerView: View {
             .padding(.horizontal, 20)
             
             Spacer()
-
+            
             // 确认按钮
             if showConfirmButton {
                 Button(confirmButtonText) {
@@ -86,7 +95,7 @@ public struct TimePickerView: View {
             updateSelectedValues()
             notifySelectionChanged()
         }
-        .frame(height: showSegmentedControl && allowedTimeTypes.count > 1 ? 450 : 400)
+        .frame(height: showSegmentedControl && allowedTimeTypes.count > 1 ? 450 : (showConfirmButton ? 450 : 350))
     }
     
     // MARK: - Picker Views
@@ -387,53 +396,91 @@ public struct TimePickerView: View {
 // MARK: - Convenience Extensions
 
 public extension TimePickerView {
-    static func yearOnly(onSelectionChanged: ((TimeSelection) -> Void)? = nil) -> TimePickerView {
+    static func yearOnly(
+        showConfirmButton: Bool = true,
+        confirmButtonText: String = "确定",
+        onSelectionChanged: ((TimeSelection) -> Void)? = nil,
+        onConfirm: ((TimeSelection) -> Void)? = nil
+    ) -> TimePickerView {
         TimePickerView(
             timeType: .year,
             showSegmentedControl: false,
             allowedTimeTypes: [.year],
-            onSelectionChanged: onSelectionChanged
+            showConfirmButton: showConfirmButton,
+            confirmButtonText: confirmButtonText,
+            onSelectionChanged: onSelectionChanged,
+            onConfirm: onConfirm
         )
     }
     
-    static func monthOnly(onSelectionChanged: ((TimeSelection) -> Void)? = nil) -> TimePickerView {
+    static func monthOnly(
+        showConfirmButton: Bool = true,
+        confirmButtonText: String = "确定",
+        onSelectionChanged: ((TimeSelection) -> Void)? = nil,
+        onConfirm: ((TimeSelection) -> Void)? = nil
+    ) -> TimePickerView {
         TimePickerView(
             timeType: .month,
             showSegmentedControl: false,
             allowedTimeTypes: [.month],
-            onSelectionChanged: onSelectionChanged
+            showConfirmButton: showConfirmButton,
+            confirmButtonText: confirmButtonText,
+            onSelectionChanged: onSelectionChanged,
+            onConfirm: onConfirm
         )
     }
     
-    static func weekOnly(onSelectionChanged: ((TimeSelection) -> Void)? = nil) -> TimePickerView {
+    static func weekOnly(
+        showConfirmButton: Bool = true,
+        confirmButtonText: String = "确定",
+        onSelectionChanged: ((TimeSelection) -> Void)? = nil,
+        onConfirm: ((TimeSelection) -> Void)? = nil
+    ) -> TimePickerView {
         TimePickerView(
             timeType: .week,
             showSegmentedControl: false,
             allowedTimeTypes: [.week],
-            onSelectionChanged: onSelectionChanged
+            showConfirmButton: showConfirmButton,
+            confirmButtonText: confirmButtonText,
+            onSelectionChanged: onSelectionChanged,
+            onConfirm: onConfirm
         )
     }
     
-    static func dayOnly(onSelectionChanged: ((TimeSelection) -> Void)? = nil) -> TimePickerView {
+    static func dayOnly(
+        showConfirmButton: Bool = true,
+        confirmButtonText: String = "确定",
+        onSelectionChanged: ((TimeSelection) -> Void)? = nil,
+        onConfirm: ((TimeSelection) -> Void)? = nil
+    ) -> TimePickerView {
         TimePickerView(
             timeType: .day,
             showSegmentedControl: false,
             allowedTimeTypes: [.day],
-            onSelectionChanged: onSelectionChanged
+            showConfirmButton: showConfirmButton,
+            confirmButtonText: confirmButtonText,
+            onSelectionChanged: onSelectionChanged,
+            onConfirm: onConfirm
         )
     }
     
     static func custom(
         timeTypes: [TimeType],
         defaultType: TimeType? = nil,
-        onSelectionChanged: ((TimeSelection) -> Void)? = nil
+        showConfirmButton: Bool = true,
+        confirmButtonText: String = "确定",
+        onSelectionChanged: ((TimeSelection) -> Void)? = nil,
+        onConfirm: ((TimeSelection) -> Void)? = nil
     ) -> TimePickerView {
         let initial = defaultType ?? timeTypes.first ?? .year
         return TimePickerView(
             timeType: initial,
             showSegmentedControl: timeTypes.count > 1,
             allowedTimeTypes: timeTypes,
-            onSelectionChanged: onSelectionChanged
+            showConfirmButton: showConfirmButton,
+            confirmButtonText: confirmButtonText,
+            onSelectionChanged: onSelectionChanged,
+            onConfirm: onConfirm
         )
     }
 }
